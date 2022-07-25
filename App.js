@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, cloneElement } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import * as Location from "expo-location";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Fontisto } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -27,7 +26,7 @@ const icons = {
 };
 
 export default function App() {
-  const [city, setCity] = useState("Loading...");
+  const [city, setCity] = useState("Loading...🛰");
   const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
   const getWeather = async () => {
@@ -103,7 +102,7 @@ export default function App() {
                   flexDirection: "row",
                   alignItems: "center",
                   width: "100%",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                 }}
               >
                 <Text style={styles.temp}>
@@ -116,10 +115,52 @@ export default function App() {
                 />
               </View>
               <View style={styles.wheatherDetails}>
-                <Text style={styles.main}>{day.weather[0].main}</Text>
-                <Text style={styles.description}>
-                  {day.weather[0].description}
+                <Text style={styles.tempDetails}>
+                  Min : {day.temp.min} °C / Max : {day.temp.max} °C
                 </Text>
+                <Text style={styles.tempDetails}>
+                  Humidity : {day.humidity}%
+                </Text>
+                {day.weather[0].main == "Rain" ? (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "baseline",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        marginTop: 30,
+                        maxWidth: SCREEN_WIDTH,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Text style={styles.main}>{day.weather[0].main}</Text>
+                      <Text style={styles.description}>
+                        &nbsp; &nbsp; - {day.weather[0].description}
+                      </Text>
+                    </View>
+                    <Text style={styles.rainNotice}>
+                      You should take an umbrella&#127746;{"\n"}Maybe 😛
+                    </Text>
+                  </>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "colmn",
+                      alignItems: "baseline",
+                      textAlign: "center",
+                      justifyContent: "center",
+                      marginTop: 30,
+                      maxWidth: SCREEN_WIDTH,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Text style={styles.main}>{day.weather[0].main}</Text>
+                    <Text style={styles.description}>
+                      &nbsp; &nbsp; - {day.weather[0].description}
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
           ))
@@ -132,37 +173,51 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#00BFFF",
+    backgroundColor: "#0984e3",
   },
   city: {
-    flex: 1.1,
+    marginTop: 25,
+    flex: 1.2,
     justifyContent: "center",
     alignItems: "center",
   },
   cityName: {
-    color: "white",
+    color: "#F2DF3A",
     fontSize: 58,
     fontWeight: "600",
   },
   day: {
     width: SCREEN_WIDTH,
-    alignItems: "flex-start",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   temp: {
-    marginTop: 50,
-    color: "white",
+    color: "#fff",
     fontSize: 100,
+    marginRight: 20,
+    marginBottom: 10,
+  },
+  tempDetails: {
+    color: "#c7ecee",
+    textAlign: "center",
+    fontSize: 18,
+    marginBottom: 5,
   },
   main: {
     color: "#fff",
-    marginTop: -10,
-    fontSize: 60,
+    fontSize: 90,
+    textAlign: "center",
   },
   description: {
     color: "#fff",
-    marginTop: 10,
     fontSize: 20,
+    textAlign: "center",
+    alignItems: "baseline",
   },
-  wheatherDetails: {},
+  rainNotice: {
+    textAlign: "center",
+    color: "#c7ecee",
+    fontSize: 18,
+    marginTop: 10,
+  },
 });
